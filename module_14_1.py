@@ -1,5 +1,4 @@
 import sqlite3
-from itertools import count
 
 #Создайте файл базы данных not_telegram.db и подключитесь к ней,
 # используя встроенную библиотеку sqlite3.
@@ -26,6 +25,9 @@ balance INTEGER NOT NULL
 )
 ''')
 
+#Чистка таблицы перед заполнением
+cursor.execute('DELETE FROM Users')
+
 #Заполните её 10 записями:
     # User1, example1@gmail.com, 10, 1000
     # User2, example2@gmail.com, 20, 1000
@@ -33,9 +35,9 @@ balance INTEGER NOT NULL
     # ...
     # User10, example10@gmail.com, 100, 1000
 
-for _ in range(10):
+for i in range(10):
     cursor.execute('INSERT INTO Users (username, email, age, balance) VALUES (?, ?, ?, ?)',
-                    (f'User{_ + 1}', f'example{_ + 1}@gmail.com', (_ +1) * 10, 1000))
+                    (f'User{i + 1}', f'example{i + 1}@gmail.com', (i +1) * 10, 1000))
 
 #Обновите balance у каждой 2ой записи начиная с 1ой на 500:
     # User1, example1@gmail.com, 10, 500
@@ -44,8 +46,7 @@ for _ in range(10):
     # ...
     # User10, example10@gmail.com, 100, 1000
 
-cursor.execute('UPDATE Users SET balance = ? WHERE id % 2 = 1', (500,))
-
+cursor.execute('UPDATE Users SET balance = 500 WHERE id % 2 = 1')
 #Удалите каждую 3ую запись в таблице начиная с 1ой:
     # User2, example2@gmail.com, 20, 1000
     # User3, example3@gmail.com, 30, 500
@@ -53,13 +54,13 @@ cursor.execute('UPDATE Users SET balance = ? WHERE id % 2 = 1', (500,))
     # ...
     # User9, example9@gmail.com, 90, 500
 
-cursor.execute('DELETE FROM Users WHERE id % 3 = 1', ())
+cursor.execute('DELETE FROM Users WHERE id % 3 = 1')
 
 #Сделайте выборку всех записей при помощи fetchall(),
 # где возраст не равен 60 и выведите их в консоль в следующем формате (без id):
 #Имя: <username> | Почта: <email> | Возраст: <age> | Баланс: <balance>
 
-cursor.execute('SELECT username, email, age, balance FROM Users WHERE age != 60', ())
+cursor.execute('SELECT username, email, age, balance FROM Users WHERE age != 60')
 users = cursor.fetchall()
 for user in users:
     print(f'Имя: {user[0]} | Почта: {user[1]} | Возраст: {user[2]} | Баланс: {user[3]}')
